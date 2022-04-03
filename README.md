@@ -1,2 +1,2 @@
-# single-round_encryption
+# Single-Round Encryption
  
