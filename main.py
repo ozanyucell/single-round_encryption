@@ -173,6 +173,11 @@ def nibble_seperator(right_rotated_block):
 
     return left_nibble, right_nibble
 
+def key_generator():
+    return
+
+def two_bit_encoder():
+    return
 
 def decryption(cypher_text):
     return cypher_text
