@@ -44,7 +44,31 @@ def file_reader():
 def split_by_eight(text):
     return [text[i:i + 8] for i in range(0, len(text), 8)]
 
-def text_swapper(block_list):
+def permutation(block_list):
+    for content in block_list:
+        temp_list = list(content)
+
+        # "ABCÇDEFG", "ABCÇDEFG"
+
+        temp_list[0], temp_list[7] = temp_list[7], temp_list[0] # 82345671
+        temp_list[5], temp_list[0] = temp_list[0], temp_list[5] # 62345871
+        temp_list[2], temp_list[5] = temp_list[5], temp_list[2] # 62845371
+        temp_list[1], temp_list[2] = temp_list[2], temp_list[1] # 68245371
+        temp_list[1], temp_list[3] = temp_list[3], temp_list[1] # 64285371
+        temp_list[4], temp_list[5] = temp_list[5], temp_list[4] # 64283571
+        temp_list[4], temp_list[6] = temp_list[6], temp_list[4] # 64287531
+
+        new_text = ""
+
+        for character in temp_list: 
+            new_text = new_text + character
+
+        block_list[block_list.index(content)] = new_text
+
+    return block_list
+
+'''
+def reverse_permutation(block_list):
     for content in block_list:
         temp_list = list(content)
 
@@ -64,6 +88,7 @@ def text_swapper(block_list):
         block_list[block_list.index(content)] = new_text
 
     return block_list
+'''
 
 def set_alphabet():
     characters= "ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ.,()!;:'\"-?$@%abcçdefgğhıijklmnoöprsştuüvyzQWXqwx"
@@ -110,12 +135,13 @@ def shift_right_rotation(times, block_binary_list):
                         
             binary_text= ""
             for character in temp_list:
-                binary_text = binary_text + character
+                binary_text += character
 
             inner_output.append(binary_text)
 
         output.append(inner_output)
-
+    print(output)
+    exit(0)
     return output
 
 def shift_left_rotation(times, block_binary_list):
@@ -140,7 +166,7 @@ def shift_left_rotation(times, block_binary_list):
     return output
 
 def encryption(plain_text):
-    block_list = text_swapper(plain_text)
+    block_list = permutation(plain_text)
     block_binary_list = encoder(block_list)
 
     right_rotated_block = shift_right_rotation(4, block_binary_list)
