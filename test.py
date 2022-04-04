@@ -46,20 +46,33 @@ def two_bit_encoder(string_key):
     return encoded_key
 '''
 
-def xor(key):
-    XOR_key = ""
+def keySRR(times, key):
+    rotated_key = ""
+    
+    temp_list = list(key)
+    for i in range(times):
+        temp_list.insert(0, temp_list.pop())
 
-    for i in range(len(key[0])):
-        if key[0][i] == key[1][i]:
-            XOR_key += "0"
-        else:
-            XOR_key += "1"
-    return XOR_key
+    for bit in temp_list:
+        rotated_key = rotated_key + bit
+
+    return rotated_key
+
+def keySLR(times, key):
+    rotated_key = ""
+    temp_list = list(key)
+    for i in range(times):
+        temp_list.append(temp_list.pop(0))
+
+    for bit in temp_list:
+        rotated_key = rotated_key + bit
+
+    return rotated_key
 
 def main():
-    test = ['00100000', '00000001']
-    print(xor(test))
-
+    test = '00100000'
+    print(keySRR(3, test))
+    print(keySLR(3, keySRR(3, test)))
 
 if __name__ == "__main__":
     main()

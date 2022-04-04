@@ -32,12 +32,6 @@ binary_to_char =   {'00000001': 'A', '00000010': 'B', '00000011': 'C', '00000100
                     '10011000': 't', '10011001': 'u', '10011010': 'ü', '10011011': 'v', '10011100': 'y',
                     '10011101': 'z', '10011110': 'q', '10011111': 'w', '10100000': 'x'}
 
-
-
-from operator import xor
-from turtle import right
-
-
 def file_reader():
     with open(f"C:\\Users\\ozany\\Desktop\\test.txt", mode='r', encoding='utf-8') as file:
         text = file.read()
@@ -64,8 +58,8 @@ def text_swapper(block_list):
 
         new_text = ""
 
-        for char in temp_list: 
-            new_text = new_text + char
+        for character in temp_list: 
+            new_text = new_text + character
 
         block_list[block_list.index(content)] = new_text
 
@@ -84,24 +78,24 @@ def binary_counter():
         num+=1
     return encoded_characters
 
-def encoder(text_list, encoded_characters):
+def encoder(text_list):
     block_binary_list = []
 
     for i in text_list:
         temp_list = list(i)
-        for char in temp_list:
-            temp_list[temp_list.index(char)] = encoded_characters[char]
-
-            '''
-            binary_text= ""
-            for character in temp_list:
-                binary_text = binary_text + character
-            '''
+        for character in temp_list:
+            temp_list[temp_list.index(character)] = char_to_binary[character]
 
         block_binary_list.append(temp_list)
 
     return block_binary_list
 
+def decoder(block_list):
+    decoded_text = ""
+    for set_of_8 in block_list:
+        for char in set_of_8:
+            decoded_text = decoded_text + binary_to_char[char]
+    return decoded_text
 
 def shift_right_rotation(times, block_binary_list):
     output = []
@@ -146,29 +140,38 @@ def shift_left_rotation(times, block_binary_list):
     return output
 
 def encryption(plain_text):
-    encoded_characters = binary_counter()
     block_list = text_swapper(plain_text)
-    block_binary_list = encoder(block_list, encoded_characters)
-
-    #print(block_binary_list) # can be deleted after development
+    block_binary_list = encoder(block_list)
 
     right_rotated_block = shift_right_rotation(4, block_binary_list)
 
-    left_nibble, right_nibble = nibble_seperator(right_rotated_block)
+    block = nibble_handler(right_rotated_block)
 
-    return right_rotated_block
+    return decoder(block)
 
-
-def nibble_seperator(right_rotated_block):
+def nibble_handler(block):
     # [['01100000', '01000000', '00100000', '10000000', '01110000', '01010000', '00110000', '00010000'], ['01100000', '01000000', '00100000', '10000000', '01110000', '01010000', '00110000', '00010000']]
-    left_nibble = ""
-    right_nibble= ""
-    for set_of_eight in right_rotated_block:
-        for index in range(len(set_of_eight), step = 2):
-            left_nibble += set_of_eight[index]
-            right_nibble += set_of_eight[index+1]
+    K2, K3, K4, K5 = key_generator()
+    left_nibble = []
+    right_nibble = []
+    for set_of_eight in block:
+        for i in range(0, len(set_of_eight), 2):
+            left_nibble.append(set_of_eight[i])
+            right_nibble.append(set_of_eight[i+1])
 
-    return left_nibble, right_nibble
+        for i in range(len(left_nibble)):
+            left_nibble[i] = xor(left_nibble[i], K2)
+            right_nibble[i] = xor(right_nibble[i], K3)
+        
+        for i in range(len(left_nibble)):
+            left_nibble[i] = xor(left_nibble[i], K4)
+            right_nibble[i] = xor(right_nibble[i], K5)
+
+        for i in range(0, len(left_nibble), 2):
+            block[block.index(set_of_eight)][i] = left_nibble[i]
+            block[block.index(set_of_eight)][i+1] = right_nibble[i]
+
+    return block
 
 def key_generator():
     key = "AB"
@@ -182,18 +185,18 @@ def key_generator():
 
     K2, K3 = concatenate_columns(column0, column1, column2, column3)
 
-    K2 = xor(K2)
-    K3 = xor(K3)
+    K2 = xor(K2[0], K2[1])
+    K3 = xor(K3[0], K3[1])
 
-    K4 = shift_left_rotation(3, K2)
-    K5 = shift_right_rotation(3, K3)
+    K4 = keySLR(3, K2)
+    K5 = keySRR(3, K3)
 
-    return K2, K3
+    return K2, K3, K4, K5
 
 def two_bit_encoder(string_key):
     encoded_key=""
-    for char in list(string_key):
-        encoded_key = encoded_key + char_to_binary.get(char)
+    for character in list(string_key):
+        encoded_key = encoded_key + char_to_binary.get(character)
     
     '''
     encoded_key = 0000000100000010 #(00000001, 00000010)
@@ -204,6 +207,29 @@ def two_bit_encoder(string_key):
     3| 0 0 1 0
     '''
     return encoded_key
+
+def keySRR(times, key):
+    rotated_key = ""
+    
+    temp_list = list(key)
+    for i in range(times):
+        temp_list.insert(0, temp_list.pop())
+
+    for bit in temp_list:
+        rotated_key = rotated_key + bit
+
+    return rotated_key
+
+def keySLR(times, key):
+    rotated_key = ""
+    temp_list = list(key)
+    for i in range(times):
+        temp_list.append(temp_list.pop(0))
+
+    for bit in temp_list:
+        rotated_key = rotated_key + bit
+
+    return rotated_key
 
 def concatenate_columns(column0, column1, column2, column3):
     conc_31 = ""
@@ -222,28 +248,25 @@ def concatenate_columns(column0, column1, column2, column3):
 
     return K2, K3
 
-def xor(keys):
+def xor(key0, key1):
     XOR_key = ""
     
-    for i in range(len(keys[0])):
-        if keys[0][i] == keys[1][i]:
+    for i in range(len(key0)):
+        if key0[i] == key1[i]:
             XOR_key += "0"
         else:
             XOR_key += "1"
-
     return XOR_key
 
 def decryption(cypher_text):
     return cypher_text
 
 def main():
-    #plain_text = file_reader()
-    #print(plain_text)
-    #encoded_block = encryption(plain_text)
+    plain_text = file_reader()
+    print(plain_text)
+    output = encryption(plain_text)
 
-    #print(encoded_block)
-
-    print(key_generator())
+    print(output)
 
     '''
     cypher_text = encrypted_text
