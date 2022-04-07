@@ -141,7 +141,6 @@ def shift_right_rotation(times, block_binary_list):
 
         output.append(inner_output)
     print(output)
-    exit(0)
     return output
 
 def shift_left_rotation(times, block_binary_list):
