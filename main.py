@@ -190,7 +190,7 @@ def dec_nibble_handler(block):
     return block
 
 def key_generator():
-    key = "AB"
+    key = "NX"
 
     encoded_key = two_bit_encoder(key)
 
@@ -228,7 +228,6 @@ def keySRR(times, key):
     rotated_key = ""
     
     temp_list = list(key)
-    print(temp_list)
     for i in range(times):
         temp_list.insert(0, temp_list.pop())
 
@@ -318,14 +317,16 @@ def decryption(cypher_text):
     return merge(block_list).strip()
 
 def main():
-    with open(f"C:\\Users\\ozany\\Desktop\\turk_plain.txt", mode='r', encoding='utf-8') as file:
+    with open(f"C:\\Users\\ozany\\Desktop\\latin_plain.txt", mode='r', encoding='utf-8') as file:
         plain_text = file.read()
 
-    print("Plain: " + str(plain_text))
+    print(f"Plain:\n{plain_text}")
+    print("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------")
     encrypted_text = encryption(plain_text)
     decrypted_text = decryption(encrypted_text)
-    print(f"Encrypted: {encrypted_text}")
-    print(f"Decrypted: {decrypted_text}")
+    print(f"Encrypted:\n{encrypted_text}")
+    print("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------")
+    print(f"Decrypted:\n{decrypted_text}")
     
 if __name__ == "__main__":
     main()
