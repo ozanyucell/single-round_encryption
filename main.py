@@ -190,7 +190,7 @@ def dec_nibble_handler(block):
     return block
 
 def key_generator():
-    key = "NX"
+    key = "AB"
 
     encoded_key = two_bit_encoder(key)
 
@@ -206,7 +206,6 @@ def key_generator():
 
     K4 = keySLR(3, K2)
     K5 = keySRR(3, K3)
-
     return K2, K3, K4, K5
 
 def two_bit_encoder(string_key):
@@ -274,20 +273,6 @@ def xor(key0, key1):
             XOR_key += "1"
     return XOR_key
 
-def block_binary_generator(cypher_text):
-    temp_list = []
-    i = 0
-    block_binary = []
-    for character in cypher_text:
-        temp_list.append(character)
-        i += 1
-        if i == 8:
-            block_binary.append(temp_list)
-            temp_list=[]
-            i = 0
-
-    return block_binary
-
 def merge(block):
     output = ""
     for i in block:
@@ -317,15 +302,23 @@ def decryption(cypher_text):
     return merge(block_list).strip()
 
 def main():
-    with open(f"C:\\Users\\ozany\\Desktop\\latin_plain.txt", mode='r', encoding='utf-8') as file:
+    with open(f"C:\\Users\\ozany\\Desktop\\latin_plain.txt", mode="r", encoding="utf-8") as file:
         plain_text = file.read()
 
     print(f"Plain:\n{plain_text}")
-    print("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------")
+    print("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n")
     encrypted_text = encryption(plain_text)
-    decrypted_text = decryption(encrypted_text)
+    
     print(f"Encrypted:\n{encrypted_text}")
-    print("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------")
+    with open(f"C:\\Users\\ozany\\Desktop\\latin_encrypted.txt", mode="w", encoding="UTF-8") as file:
+        file.write(encrypted_text)
+    
+    with open(f"C:\\Users\\ozany\\Desktop\\latin_encrypted.txt", mode="r", encoding="UTF-8") as file:
+        encrypted_text = file.read()
+
+    decrypted_text = decryption(encrypted_text)
+
+    print("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n")
     print(f"Decrypted:\n{decrypted_text}")
     
 if __name__ == "__main__":
