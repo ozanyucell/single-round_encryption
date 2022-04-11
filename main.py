@@ -32,18 +32,17 @@ binary_to_char = {  '00000001': 'A', '00000010': 'B', '00000011': 'C', '00000100
                     '10010111': 'ş', '10011000': 't', '10011001': 'u', '10011010': 'ü', '10011011': 'v',
                     '10011100': 'y', '10011101': 'z', '10011110': 'q', '10011111': 'w', '10100000': 'x'}
 
-def split_by_eight(text):
+def split_by_eight(text): # splits the text by eight and adds space at the end of the text for making it possible to divide by eight
     split = [text[i:i + 8] for i in range(0, len(text), 8)]
     if len(split[-1]) != 8:
         split[-1] += " " * (8 - len(split[-1]))
 
     return split
 
-def permutation(block_list):
+def permutation(block_list): # permutates with hard-coded permutation code | 12345678 --> 64287531
     for content in block_list:
         temp_list = list(content)
 
-        # "ABCÇDEFG", "ABCÇDEFG"
         #  12345678
         temp_list[0], temp_list[7] = temp_list[7], temp_list[0] # 82345671
         temp_list[5], temp_list[0] = temp_list[0], temp_list[5] # 62345871
@@ -52,9 +51,9 @@ def permutation(block_list):
         temp_list[1], temp_list[3] = temp_list[3], temp_list[1] # 64285371
         temp_list[4], temp_list[5] = temp_list[5], temp_list[4] # 64283571
         temp_list[4], temp_list[6] = temp_list[6], temp_list[4] # 64287531
+        #  64287531
 
         new_text = ""
-
         for character in temp_list: 
             new_text = new_text + character
 
@@ -62,9 +61,11 @@ def permutation(block_list):
 
     return block_list
 
-def reverse_permutation(block_list):
+def reverse_permutation(block_list): # permutates with hard-coded permutation code | 64287531 --> 12345678
     for content in block_list:
         temp_list = list(content)
+
+        #  64287531
         temp_list[6], temp_list[4] = temp_list[4], temp_list[6] # 64287531
         temp_list[5], temp_list[4] = temp_list[4], temp_list[5] # 64283571
         temp_list[3], temp_list[1] = temp_list[1], temp_list[3] # 64285371
@@ -72,9 +73,9 @@ def reverse_permutation(block_list):
         temp_list[5], temp_list[2] = temp_list[2], temp_list[5] # 62845371
         temp_list[0], temp_list[5] = temp_list[5], temp_list[0] # 62345871
         temp_list[7], temp_list[0] = temp_list[0], temp_list[7] # 82345671
+        #  12345678
 
         new_text = ""
-
         for character in temp_list: 
             new_text = new_text + character
 
@@ -82,7 +83,7 @@ def reverse_permutation(block_list):
 
     return block_list
 
-def encoder(text_list):
+def encoder(text_list): # encodes string to binary
     block_binary_list = []
 
     for i in text_list:
@@ -94,14 +95,16 @@ def encoder(text_list):
 
     return block_binary_list
 
-def decoder(block_list):
+def decoder(block_list): # decodes binary to string
     decoded_text = ""
+
     for set_of_8 in block_list:
         for char in set_of_8:
             decoded_text = decoded_text + binary_to_char[char]
+
     return decoded_text
 
-def shift_right_rotation(times, block_binary_list):
+def shift_right_rotation(times, block_binary_list): # shift right rotation function for input of list
     output = []
     for block in block_binary_list:
         inner_output = []
@@ -121,7 +124,7 @@ def shift_right_rotation(times, block_binary_list):
         output.append(inner_output)
     return output
 
-def shift_left_rotation(times, block_binary_list):
+def shift_left_rotation(times, block_binary_list): # shift left rotation function for input of list
     output = []
     for block in block_binary_list:
         inner_output = []
@@ -142,8 +145,7 @@ def shift_left_rotation(times, block_binary_list):
 
     return output
 
-def enc_nibble_handler(block):
-    # [['01100000', '01000000', '00100000', '10000000', '01110000', '01010000', '00110000', '00010000'], ['01100000', '01000000', '00100000', '10000000', '01110000', '01010000', '00110000', '00010000']]
+def enc_nibble_handler(block): # splits the text into nibbles, and handles xor operations with keys (for encryption)
     K2, K3, K4, K5 = key_generator()
     for set_of_eight in block:
         left_nibble = []
@@ -166,7 +168,7 @@ def enc_nibble_handler(block):
 
     return block
 
-def dec_nibble_handler(block):
+def dec_nibble_handler(block): # splits the text into nibbles, and handles xor operations with keys (for decryption)
     K2, K3, K4, K5 = key_generator()
     for set_of_eight in block:
         left_nibble = []
@@ -189,7 +191,7 @@ def dec_nibble_handler(block):
 
     return block
 
-def key_generator():
+def key_generator(): # generates keys
     key = "AB"
 
     encoded_key = two_bit_encoder(key)
@@ -208,7 +210,7 @@ def key_generator():
     K5 = keySRR(3, K3)
     return K2, K3, K4, K5
 
-def two_bit_encoder(string_key):
+def two_bit_encoder(string_key): # encodes the key from string to binary
     encoded_key=""
     for character in list(string_key):
         encoded_key = encoded_key + char_to_binary.get(character)
@@ -223,7 +225,7 @@ def two_bit_encoder(string_key):
     '''
     return encoded_key
 
-def keySRR(times, key):
+def keySRR(times, key): # shift right rotation function for input of string
     rotated_key = ""
     
     temp_list = list(key)
@@ -235,7 +237,7 @@ def keySRR(times, key):
 
     return rotated_key
 
-def keySLR(times, key):
+def keySLR(times, key): # shift left rotation function for input of list
     rotated_key = ""
     temp_list = list(key)
     for i in range(times):
@@ -246,7 +248,7 @@ def keySLR(times, key):
 
     return rotated_key
 
-def concatenate_columns(column0, column1, column2, column3):
+def concatenate_columns(column0, column1, column2, column3): # concatenates columns
     conc_31 = ""
     conc_02 = ""
     conc_01 = ""
@@ -263,7 +265,7 @@ def concatenate_columns(column0, column1, column2, column3):
 
     return K2, K3
 
-def xor(key0, key1):
+def xor(key0, key1): # XOR function
     XOR_key = ""
     
     for i in range(len(key0)):
@@ -273,53 +275,55 @@ def xor(key0, key1):
             XOR_key += "1"
     return XOR_key
 
-def merge(block):
+def merge(block): # merges array into string (needs to be used twice if there is a 2 dimensional list)
     output = ""
     for i in block:
         output += "".join(i)
     return output
 
-def encryption(plain_text):
+def encryption(plain_text): # encryption function
     block_list = split_by_eight(plain_text)
     block_list = permutation(block_list)
     block_binary_list = encoder(block_list)
     right_rotated_block = shift_right_rotation(4, block_binary_list)
     nibbled = enc_nibble_handler(right_rotated_block)
     block = reverse_permutation(nibbled)
-    output = merge(block)
+    ciphertext = merge(block)
 
-    return output
+    return ciphertext
 
-def decryption(cypher_text):
-    splitted_text = split_by_eight(split_by_eight(cypher_text)) # remove this if you are reading from file
+def decryption(ciphertext): # decryption function
+    splitted_text = split_by_eight(split_by_eight(ciphertext))
     binary_cipher = permutation(splitted_text)
     binary_cipher = split_by_eight(split_by_eight(merge(binary_cipher)))
     reversed_nibble = dec_nibble_handler(binary_cipher)
     left_rotated_block = shift_left_rotation(4, reversed_nibble)
     decoded = decoder(left_rotated_block)
     block_list = reverse_permutation(split_by_eight(decoded))
+    plaintext = merge(block_list).strip() # .strip() removes the extra spaces that we added at the beginning
 
-    return merge(block_list).strip()
+    return plaintext
 
-def main():
-    with open(f"C:\\Users\\ozany\\Desktop\\latin_plain.txt", mode="r", encoding="utf-8") as file:
+def main(): # main function
+    input_path = input("Please enter the path of plain text file: ") # C:\\Users\\ozany\\Desktop\\latin_plain.txt
+    with open(f"{input_path}", mode="r", encoding="utf-8") as file:
         plain_text = file.read()
 
-    print(f"Plain:\n{plain_text}")
-    print("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n")
+    print(f"\nPlain:\n{plain_text}\n")
     encrypted_text = encryption(plain_text)
-    
-    print(f"Encrypted:\n{encrypted_text}")
-    with open(f"C:\\Users\\ozany\\Desktop\\latin_encrypted.txt", mode="w", encoding="UTF-8") as file:
+
+    output_path = input("Please enter a path for cipher text file: ") # C:\\Users\\ozany\\Desktop\\latin_encrypted.txt
+
+    print(f"\nEncrypted:\n{encrypted_text}\n")
+    with open(f"{output_path}", mode="w", encoding="UTF-8") as file:
         file.write(encrypted_text)
-    
-    with open(f"C:\\Users\\ozany\\Desktop\\latin_encrypted.txt", mode="r", encoding="UTF-8") as file:
+
+    with open(f"{output_path}", mode="r", encoding="UTF-8") as file:
         encrypted_text = file.read()
 
     decrypted_text = decryption(encrypted_text)
 
-    print("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n")
-    print(f"Decrypted:\n{decrypted_text}")
+    print(f"Decrypted:\n{decrypted_text}\n")
     
 if __name__ == "__main__":
     main()
