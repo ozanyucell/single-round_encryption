@@ -192,7 +192,7 @@ def dec_nibble_handler(block): # splits the text into nibbles, and handles xor o
     return block
 
 def key_generator(): # generates keys
-    key = "AB"
+    key = "nX"
 
     encoded_key = two_bit_encoder(key)
 
@@ -305,14 +305,14 @@ def decryption(ciphertext): # decryption function
     return plaintext
 
 def main(): # main function
-    input_path = input("Please enter the path of plain text file: ") # C:\\Users\\ozany\\Desktop\\latin_plain.txt
+    input_path = input("Please enter the path of plain text file: ") # for me, it was: 'C:\\Users\\ozany\\Desktop\\latin_plain.txt'
     with open(f"{input_path}", mode="r", encoding="utf-8") as file:
         plain_text = file.read()
 
     print(f"\nPlain:\n{plain_text}\n")
     encrypted_text = encryption(plain_text)
 
-    output_path = input("Please enter a path for cipher text file: ") # C:\\Users\\ozany\\Desktop\\latin_encrypted.txt
+    output_path = input("Please enter a path for cipher text file: ") # for me, it was: 'C:\\Users\\ozany\\Desktop\\latin_encrypted.txt'
 
     print(f"\nEncrypted:\n{encrypted_text}\n")
     with open(f"{output_path}", mode="w", encoding="UTF-8") as file:
