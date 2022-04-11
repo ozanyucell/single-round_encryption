@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 char_to_binary = {  'A': '00000001', 'B': '00000010', 'C': '00000011', 'Ç': '00000100', 'D': '00000101',
                     'E': '00000110', 'F': '00000111', 'G': '00001000', 'Ğ': '00001001', 'H': '00001010',
                     'I': '00001011', 'İ': '00001100', 'J': '00001101', 'K': '00001110', 'L': '00001111',
@@ -305,14 +307,18 @@ def decryption(ciphertext): # decryption function
     return plaintext
 
 def main(): # main function
-    input_path = input("Please enter the path of plain text file: ") # for me, it was: 'C:\\Users\\ozany\\Desktop\\latin_plain.txt'
-    with open(f"{input_path}", mode="r", encoding="utf-8") as file:
-        plain_text = file.read()
+    input_path = input("Please enter the path (absolute or relative) to plain text file: ")
+    try:
+        with open(f"{input_path}", mode="r", encoding="utf-8") as file:
+            plain_text = file.read()
+    except:
+        print("File not found. Please enter an existing file.")
+        exit(0)
 
     print(f"\nPlain:\n{plain_text}\n")
     encrypted_text = encryption(plain_text)
 
-    output_path = input("Please enter a path for cipher text file: ") # for me, it was: 'C:\\Users\\ozany\\Desktop\\latin_encrypted.txt'
+    output_path = input("Please enter existing or new path (absolute or relative) to cipher text file: ")
 
     print(f"\nEncrypted:\n{encrypted_text}\n")
     with open(f"{output_path}", mode="w", encoding="UTF-8") as file:
